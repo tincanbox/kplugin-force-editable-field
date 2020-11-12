@@ -1,0 +1,19 @@
+#!/bin/bash
+
+echo $(pwd)
+
+echo "updating submodules..."
+git submodule update --remote --recursive
+
+echo "moving files..."
+kpath="./kplugin-template"
+if [ -e "$kpath" ]
+  then
+    cp -r "$kpath"/src/vendor/* ./src/vendor/
+    echo "done."
+    exit 0
+  else
+    echo "Should have kplugin-template dir."
+    exit 1
+fi
+

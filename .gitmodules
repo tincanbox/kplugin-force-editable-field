@@ -1,0 +1,3 @@
+[submodule "kplugin-template"]
+	path = kplugin-template
+	url = https://github.com/tincanbox/kplugin-template.git

@@ -1,0 +1,81 @@
+#!/bin/bash
+
+set -e
+echo $(pwd)
+
+kpath="./kplugin-template"
+if [ -e "$kpath" ]
+  then
+    echo "$kpath"
+else
+    echo "Should have kplugin-template dir."
+    exit 1
+fi
+
+bkdir="bk."$(date +"%s")
+
+if [ ! -e "$bkdir" ]
+  then
+    mkdir $bkdir
+fi
+
+f=.gitignore
+if [ -e "./""$f" ]; then mv ./"$f" "$bkdir"/ fi
+cp "$kpath"/"$f" ./
+
+f=package.json
+if [ -e "./""$f" ]; then mv ./"$f" "$bkdir"/ fi
+cp "$kpath"/"$f" ./
+
+f=webpack.config.js
+if [ -e "./""$f" ]; then mv ./"$f" "$bkdir"/ fi
+cp "$kpath"/"$f" ./
+
+f=.npmrc
+if [ -e "./""$f" ]; then mv ./"$f" "$bkdir"/ fi
+cp "$kpath"/"$f" ./
+
+f=README.md
+if [ -e "./""$f" ]; then mv ./"$f" "$bkdir"/ fi
+cp "$kpath"/"$f" ./
+
+# run dir ========================
+
+if [ -e ./run ]
+  then
+    mv ./run "$bkdir"/
+  else
+    echo "run dir not found."
+fi
+
+mkdir ./run
+cp -r "$kpath"/run/watch ./run/
+chmod 0755 ./run/watch
+
+
+if [ -e ./scripts ]
+  then
+    mv ./scripts "$bkdir"/
+  else
+    echo "scripts dir not found."
+fi
+
+mkdir ./scripts
+cp -r "$kpath"/scripts/* ./scripts/
+
+
+if [ -e ./src ]
+  then
+    mv ./src "$bkdir"/
+  else
+    echo "src dir not found."
+fi
+
+mkdir ./src
+cp -r "$kpath"/src/* ./src/
+
+git init
+git submodule update --init --force --remote --recursive
+npm install
+
+exit 0

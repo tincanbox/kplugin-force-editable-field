@@ -36,8 +36,8 @@ import SharedLib from '../lib/shared.js';
     fields.forEach(function(field){
       let k = field.target;
       if (record.hasOwnProperty(k)) {
-        record[k].disabled = true;
-        K.debug.log(k + ' disabled.');
+        record[k].disabled = false;
+        K.debug.log(k + ' FORCEFULLY enabled');
       }
     });
 

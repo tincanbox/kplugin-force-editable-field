@@ -33,13 +33,15 @@ import SharedLib from '../lib/shared.js';
     let fields = S.config.json.table;
     let record = event.record;
 
-    fields.forEach(function(field){
-      let k = field.target;
-      if (record.hasOwnProperty(k)) {
-        record[k].disabled = false;
-        K.debug.log(k + ' FORCEFULLY enabled');
-      }
-    });
+    if (fields) {
+      fields.forEach(function(field){
+        let k = field.target;
+        if (record.hasOwnProperty(k)) {
+          record[k].disabled = false;
+          K.debug.log(k + ' FORCEFULLY enabled');
+        }
+      });
+    } 
 
     return event;
   });

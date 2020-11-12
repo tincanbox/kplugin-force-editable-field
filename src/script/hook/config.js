@@ -28,10 +28,11 @@ import SharedLib from '../lib/shared.js';
         editorParams: {
           values: function(row){
             var vals = {};
+            var fs = fetch_target_field_list();
             var ks = Object.keys(S.properties).sort();
-            for(var k of ks){
-              var p = S.properties[k];
-              vals[p.code] = p.code + " ["+p.type+"]"
+            for(var k in fs){
+              var p = fs[k];
+              vals[p.toCode] = p.toLabel + " ["+p.label+"]"
             }
             return vals;
           },
@@ -170,6 +171,59 @@ import SharedLib from '../lib/shared.js';
     load_config();
     build_table();
     render_plugin_data();
+  }
+
+  function fetch_target_field_list() {
+    // ルックアップ項目を取得
+    var fields = [];
+
+    for (var strKey in S.properties) {
+      if (S.properties[strKey]["lookup"]) {
+
+        var pp = S.properties[strKey];
+
+        var fieldMappings = pp["lookup"].fieldMappings;
+
+        for (var i = 0; i < fieldMappings.length; i++) {
+          fields.push({
+            label: pp.label,
+            code: pp.code,
+            toCode: fieldMappings[i].field,
+            toLabel: S.properties[fieldMappings[i].field].label,
+            tableFields: null,
+            tableCode: '',
+            state: true,
+          });
+        }
+      }
+
+      // サブテーブル処理
+      if (S.properties[strKey].type == "SUBTABLE") {
+        for (var strKey2 in Object(properties[strKey].fields)) {
+
+          var pp = S.properties[strKey].fields[strKey2];
+
+          if (pp["lookup"]) {
+            var fieldMappings = pp["lookup"].fieldMappings;
+
+            for (var i = 0; i < fieldMappings.length; i++) {
+              fields.push({
+                label: pp.label,
+                code: pp.code,
+                toCode: fieldMappings[i].field,
+                toLabel: S.properties[strKey].fields[fieldMappings[i].field].label,
+                tableFields: S.properties[strKey].fields,
+                tableCode: strKey,
+                state: true
+              });
+            }
+          }
+        }
+      }
+
+    }
+
+    return fields;
   }
 
   /* Just loads $k.config

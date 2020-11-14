@@ -5,3 +5,4 @@ bk.*
 *.local
 .build
 src/vendor/kluginn
+*.ppk
